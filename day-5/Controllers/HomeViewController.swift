@@ -8,7 +8,7 @@
 
     import UIKit
     
-    class TestViewController: UIViewController, UITableViewDataSource, UITableViewDelegate, OptionButtonsDelegate {
+    class HomeViewController: UIViewController, UITableViewDataSource, UITableViewDelegate, OptionButtonsDelegate {
         
         func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
             return listRestaurant.count
@@ -31,7 +31,7 @@
                 let data = try? Data(contentsOf: url!)
                 DispatchQueue.main.async {
                     if data != nil{
-                        cell.imageView?.image = UIImage(data: data!)
+                        cell.titleImage?.image = UIImage(data: data!)
                     }
 
                 }
@@ -43,6 +43,7 @@
         
         @objc func btnAccept (sender: UIButton){
             print(sender.tag)
+            self.alertMessager(title: "hey", message: "good")
         }
         
         func closeFriendsTapped(at index: IndexPath) {
@@ -52,10 +53,10 @@
         func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
             return "Section: \(section)"
         }
-        func numberOfSections(in tableView: UITableView) -> Int {
-            //Tra ve so sesstion
-            return 1
-        }
+//        func numberOfSections(in tableView: UITableView) -> Int {
+//            //Tra ve so sesstion
+//            return 0
+//        }
         
         var listRestaurant: [Restaurant] = []
         

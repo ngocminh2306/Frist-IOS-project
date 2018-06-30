@@ -8,10 +8,35 @@
 
 import UIKit
 
-class GetDataViewController: UIViewController {
+class CollectionViewController: UIViewController, UICollectionViewDataSource, UICollectionViewDelegate {
+    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+        return 3
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "cellView", for: indexPath) as! UICollectionViewCell
+        
+        let url = URL(string: listRestaurant[indexPath.row].resPhoto)
+        
+        DispatchQueue.global().async {
+            let data = try? Data(contentsOf: url!)
+            DispatchQueue.main.async {
+                if data != nil{
+//cell.Image = UIImage.init(data: !data)
+                }
+                
+            }
+        }
 
+        return cell
+    }
+    
+    @IBOutlet weak var productColection: UICollectionView!
+    
     override func viewDidLoad() {
         super.viewDidLoad()
+        productColection.delegate = self
+        productColection.dataSource=self
         getData()
         // Do any additional setup after loading the view.
     }
@@ -20,8 +45,7 @@ class GetDataViewController: UIViewController {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
     }
-    
-    var lstRestaurance: [Restaurant] = []
+    var listRestaurant: [Restaurant] = []
     private func getData() {
         
         let stUrl = "https://api.fpt.io/restaurants"
@@ -45,9 +69,9 @@ class GetDataViewController: UIViewController {
             do {
                 let todo = try decoder.decode([Restaurant].self, from: responseData)
                 print(todo)
-                self.lstRestaurance = todo
+                self.listRestaurant = todo
                 DispatchQueue.main.async {
-                    //self..reloadData()
+                    self.productColection.reloadData()
                 }
                 
             } catch {
@@ -57,7 +81,6 @@ class GetDataViewController: UIViewController {
         
         task.resume()
     }
-
     /*
     // MARK: - Navigation
 
