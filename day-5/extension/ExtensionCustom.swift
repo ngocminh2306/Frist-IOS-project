@@ -26,6 +26,22 @@ extension UIImageView {
             }
         }
     }
+    func getImageURL(url: URL) {
+        DispatchQueue.global().async {
+            
+            if url == nil {
+                return
+            }
+            
+            let data = try? Data(contentsOf: url)
+            DispatchQueue.main.async {
+                if data == nil{
+                    return
+                }
+                self.image = UIImage(data: data!)
+            }
+        }
+    }
 }
 
 

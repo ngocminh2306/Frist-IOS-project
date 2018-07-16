@@ -9,7 +9,7 @@
     import UIKit
     
     class HomeViewController: UIViewController, UITableViewDataSource, UITableViewDelegate, OptionButtonsDelegate {
-        
+        var refresh = UIRefreshControl();
         func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
             return listRestaurant.count
         }
@@ -42,12 +42,11 @@
         }
         
         @objc func btnAccept (sender: UIButton){
-            print(sender.tag)
-            self.alertMessager(title: "hey", message: "good")
+            alertMessager(title: "\(sender.tag)", message: "2")
         }
         
         func closeFriendsTapped(at index: IndexPath) {
-            self.showAlert(message: "button tapped at index:\(index)")
+            alertMessager(title: "\(index)", message: "button tapped at index:\(index)")
         }
         
         func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
@@ -79,48 +78,17 @@
         //    @IBAction func btnAccept(_ sender: Any) {
         //        self.showAlert(message: "click")
         //    }
-        func showAlert(message: String){
-            let alert = UIAlertController(title: "Thông báo", message: message, preferredStyle: UIAlertControllerStyle.alert)
-            alert.addAction(UIAlertAction(title: "Ok", style: UIAlertActionStyle.default, handler: nil))
-            alert.addAction(UIAlertAction(title: "Cancel", style: UIAlertActionStyle.default, handler: nil))
-            self.present(alert, animated: true, completion: nil)
-        }
-        
 
         private func getData() {
             
             let stUrl = "https://api.fpt.io/restaurants"
             
-            let url = URL(string: stUrl)
-            
-            let task = URLSession.shared.dataTask(with: url!) { (data, response, error) in
-                
-                guard error == nil else {
-                    print(error?.localizedDescription)
-                    return
-                }
-                
-                guard let responseData = data else {
-                    
-                    print("no data in response")
-                    return
-                }
-                
-                let decoder = JSONDecoder()
-                do {
-                    let todo = try decoder.decode([Restaurant].self, from: responseData)
-                    print(todo)
-                    self.listRestaurant = todo
-                    DispatchQueue.main.async {
-                        self.tbViewRestaurant.reloadData()
-                    }
-                    
-                } catch {
-                    print(error.localizedDescription)
+            BackEndManager.getRestaurantListFrom(host: stUrl) { (respones_Restaurant: [Restaurant]) in
+                self.listRestaurant = respones_Restaurant
+                DispatchQueue.main.async {
+                    self.tbViewRestaurant.reloadData()
                 }
             }
-            
-            task.resume()
         }
         /*
          // MARK: - Navigation
